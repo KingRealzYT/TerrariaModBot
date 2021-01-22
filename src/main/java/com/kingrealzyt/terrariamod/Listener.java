@@ -2,7 +2,10 @@ package com.kingrealzyt.terrariamod;
 
 import me.duncte123.botcommons.BotCommons;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -11,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.time.Instant;
+import java.util.List;
 
 public class Listener extends ListenerAdapter {
 
@@ -56,4 +60,43 @@ public class Listener extends ListenerAdapter {
         }
     }
 
+    @Override
+    public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
+        final List<TextChannel> textChannel = event.getGuild().getTextChannelsByName("welcome", true);
+        EmbedBuilder eb = new EmbedBuilder();
+
+        if (textChannel.isEmpty()) {
+            return;
+        }
+
+        final TextChannel yestextChannel = textChannel.get(0);
+
+        eb.setTitle("Welcome!");
+        eb.addField("Welcome to the server", event.getMember().getUser().getAsMention() + " to " + event.getGuild().getName(), true);
+        eb.setThumbnail(event.getMember().getUser().getEffectiveAvatarUrl());
+        eb.setTimestamp(Instant.now());
+        eb.setColor(0xd01212);
+
+        yestextChannel.sendMessage(eb.build()).queue();
+    }
+
+    @Override
+    public void onGuildMemberLeave(@NotNull GuildMemberLeaveEvent event) {
+        final List<TextChannel> textChannel = event.getGuild().getTextChannelsByName("welcome", true);
+        EmbedBuilder eb = new EmbedBuilder();
+
+        if (textChannel.isEmpty()) {
+            return;
+        }
+
+        final TextChannel yestextChannel = textChannel.get(0);
+
+        eb.setTitle("Goodbye!");
+        eb.addField(event.getMember().getUser().getAsTag(), " left " + event.getGuild().getName() + " this is very sad :(", true);
+        eb.setThumbnail(event.getMember().getUser().getEffectiveAvatarUrl());
+        eb.setTimestamp(Instant.now());
+        eb.setColor(0xd01212);
+
+        yestextChannel.sendMessage(eb.build()).queue();
+    }
 }
