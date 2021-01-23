@@ -32,7 +32,15 @@ public class Listener extends ListenerAdapter {
         String raw = event.getMessage().getContentRaw();
 
         if (raw.equalsIgnoreCase(prefix + "shutdown")
-                && event.getAuthor().getId().equals(Config.owner_id)) {
+                && event.getAuthor().getId().equals(Config.realz_id)){
+            LOGGER.info("Shutting down");
+            event.getMessage().getChannel().sendMessage("I am shutting down!").queue();
+            event.getJDA().shutdown();
+            BotCommons.shutdown(event.getJDA());
+        }
+
+        if (raw.equalsIgnoreCase(prefix + "shutdown")
+                && event.getAuthor().getId().equals(Config.ryo_id)){
             LOGGER.info("Shutting down");
             event.getMessage().getChannel().sendMessage("I am shutting down!").queue();
             event.getJDA().shutdown();

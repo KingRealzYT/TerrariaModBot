@@ -9,7 +9,7 @@ mainClassName = 'com.kingrealzyt.terrariamod.TerrariaMod'
 
 version '1.0'
 
-sourceCompatibility = JavaVersion.VERSION_12
+sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
     jcenter()
@@ -22,6 +22,21 @@ dependencies {
     implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
     implementation group: 'org.menudocs', name: 'paste-client-java', version: '1.0.16'
 
+}
+
+def dependsDir = "${buildDir}/libs/dependencies/"
+task copyDependencies(type: Copy) {
+    from configurations.compile
+    into "${dependsDir}"
+}
+task createJar(dependsOn: copyDependencies, type: Jar) {
+
+    manifest {
+        attributes('Main-Class': 'com.kingrealzyt.terrariamod.TerrariaMod',
+                'Class-Path': configurations.compile.collect { 'dependencies/' + it.getName() }.join(' ')
+        )
+    }
+    with jar
 }
 
 compileJava.options.encoding = 'UTF-8'
